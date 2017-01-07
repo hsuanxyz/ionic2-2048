@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>
+      2048
+      <ion-icon name="game-controller-a"></ion-icon>
+    </ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only >
+        <ion-icon name="md-refresh"></ion-icon>
+      </button>
+      <button ion-button icon-only >
+        <ion-icon name="md-undo"></ion-icon>(5)
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="main">
+
+  <div class="score-box">
+    <div class="score">
+      <p>得分</p>
+      <p class="now">11825</p>
+    </div>
+    <div class="score ">
+      <p>最高</p>
+      <p class="highest">112862</p>
+    </div>
+  </div>
+
+
+  <div class="items-box">
+    <div *ngFor="let item of items"
+         [class]="'item item-'+ (item>8192 ? '16384' : item)">
+      {{item < 2 ? '' : item}}</div>
+  </div>
+
+  <div class="tips">
+    <h5>合并数字获得2048，或者更高！</h5>
+    <p>咋玩：滑动手指控制方向，合并相同数字获得胜利或者失败！</p>
+  </div>
+
+</ion-content>
