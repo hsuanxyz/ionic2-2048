@@ -6,7 +6,7 @@
     </ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only >
+      <button ion-button icon-only (click)="start()">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
       <button ion-button icon-only >
@@ -35,6 +35,8 @@
          [class]="'item item-'+ (item>8192 ? '16384' : item)">
       {{item < 2 ? '' : item}}</div>
   </div>
+
+  <button (click)="up()">上</button>
 
   <div class="tips">
     <h5>合并数字获得2048，或者更高！</h5>
