@@ -16,9 +16,11 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="main">
+<ion-content class="main" >
 
-  <div class="score-box">
+  <div class="swipeBox" (swipe)="swipeEvent($event)"></div>
+
+  <div class="score-box" >
     <div class="score">
       <p>得分</p>
       <p class="now">11825</p>

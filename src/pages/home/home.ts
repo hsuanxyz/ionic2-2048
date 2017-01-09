@@ -31,6 +31,35 @@ export class HomePage {
     this.init();
   }
 
+
+
+  swipeEvent($e) {
+    console.log($e.direction)
+    let what = '';
+    switch ($e.direction) {
+      case 8:
+        what = 'Swiped up';
+        this.up();
+        break;
+      case 16:
+        what = 'Swiped down';
+        this.down();
+        break;
+      case 2:
+        what = 'Swiped left';
+        this.left();
+        break;
+      case 4:
+        what = 'Swiped right';
+        this.right();
+        break;
+      default:
+        what = 'Swiped ???';
+        break;
+    }
+    console.log(what)
+  }
+
   /**
    * 获取元素为0的索引数组
    * @returns {Array}
