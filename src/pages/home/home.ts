@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { NavController, Events } from 'ionic-angular';
 
+declare let window;
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -9,19 +10,22 @@ import { NavController, Events } from 'ionic-angular';
 export class HomePage {
 
   items:Array<number>;
+  audio:any;
 
   constructor(
     public navCtrl: NavController,
     public events: Events
   ) {
     // this.items = [16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,0,0];
+    this.audio = new Audio();
+    this.audio.src = "../assets/901.wav";
+    this.audio.load();
     this.init();
   }
 
   ionViewDidLoad() {
 
     this.events.subscribe('event:swipe', (type) => {
-      console.log(type);
       switch (type) {
         case 'up':
           this.up();
@@ -33,6 +37,7 @@ export class HomePage {
           break;
       }
     });
+
   }
 
   static getRandomIntInclusive(min:number, max:number):number {
@@ -48,6 +53,7 @@ export class HomePage {
   }
 
   start(){
+
     this.init();
   }
 
@@ -63,6 +69,11 @@ export class HomePage {
         break;
     }
 
+  }
+
+  isGameOver():boolean {
+
+    return true;
   }
 
   /**
@@ -83,6 +94,7 @@ export class HomePage {
    * 随机填充空位
    */
   randomFill() {
+    this.audio.play();
     let indexArr: Array<number>;
     let fillIndex: number;
     let random: number;
@@ -94,64 +106,79 @@ export class HomePage {
   }
 
   up(){
+    let isNext = false;
     let mergeList = [];
     for(let i = 0; i < 4; i++) {
       this.items.forEach( (item,index,arr) => {
           if(this.canMoveUp(index)){
             this.items[index-4] = item;
             this.items[index] = 0;
+            isNext = true;
           }else if(this.canMergeUp(index) && mergeList.indexOf(index) === -1){
             mergeList.push(index-4);
             this.items[index-4] = item*2;
             this.items[index] = 0;
+            isNext = true;
           }
 
       });
     }
-
-    this.randomFill();
-
+    if(isNext){
+      this.randomFill();
+    }
   }
 
   down(){
+    let isNext = false;
     let mergeList = [];
     for(let i = 0; i < 4; i++) {
       this.items.forEach( (item,index,arr) => {
         if(this.canMoveDown(index)){
           this.items[index+4] = item;
           this.items[index] = 0;
+          isNext = true;
         }else if(this.canMergeDown(index) && mergeList.indexOf(index) === -1){
           mergeList.push(index+4);
           this.items[index+4] = item*2;
           this.items[index] = 0;
+          isNext = true;
         }
 
       });
     }
+    if(isNext){
+      this.randomFill();
+    }
 
-    this.randomFill();
   }
 
   left(){
+    let isNext = false;
     let mergeList = [];
     for(let i = 0; i < 4; i++) {
       this.items.forEach( (item,index,arr) => {
         if(this.canMoveLeft(index)){
           this.items[index-1] = item;
           this.items[index] = 0;
+          isNext = true;
         }else if(this.canMergeLeft(index) && mergeList.indexOf(index) === -1){
           mergeList.push(index-1);
           this.items[index-1] = item*2;
           this.items[index] = 0;
+
+          isNext = true;
         }
 
       });
     }
-
-    this.randomFill();
+    if(isNext){
+      this.randomFill();
+    }
   }
 
   right(){
+    let isNext = false;
+
     let mergeList = [];
     for(let i = 0; i < 4; i++) {
       this.items.forEach( (item,index,arr) => {
@@ -159,53 +186,64 @@ export class HomePage {
           if(this.canMoveRight(index)){
             this.items[index+1] = item;
             this.items[index] = 0;
+            isNext = true;
           }else if(this.canMergeRight(index) && mergeList.indexOf(index) === -1){
             mergeList.push(index+1);
             this.items[index+1] = item*2;
             this.items[index] = 0;
+            isNext = true;
           }
         }
       });
     }
-
-    this.randomFill();
+    if(isNext){
+      this.randomFill();
+    }
   }
 
   canMoveUp(index){
+    if(this.items[index] === 0) return false;
     if(index < 4) return false;
     if(this.items[index-4] === 0) return true;
   }
 
   canMergeUp(index){
+    if(this.items[index] === 0) return false;
     if(index < 4) return false;
     if(this.items[index-4] === this.items[index]) return true;
   }
 
   canMoveDown(index){
+    if(this.items[index] === 0) return false;
     if(index > 11) return false;
     if(this.items[index+4] === 0) return true;
   }
 
   canMergeDown(index){
+    if(this.items[index] === 0) return false;
     if(index > 11) return false;
     if(this.items[index+4] === this.items[index]) return true;
   }
 
   canMoveLeft(index){
+    if(this.items[index] === 0) return false;
     if([4,8,12,16].indexOf(index) !== -1) return false;
     if(this.items[index-1] === 0) return true;
   }
 
   canMergeLeft(index){
+    if(this.items[index] === 0) return false;
     if([4,8,12,16].indexOf(index) !== -1) return false;
     if(this.items[index-1] === this.items[index]) return true;
   }
   canMoveRight(index){
+    if(this.items[index] === 0) return false;
     if([3,7,11,15].indexOf(index) !== -1) return false;
     if(this.items[index+1] === 0) return true;
   }
 
   canMergeRight(index){
+    if(this.items[index] === 0) return false;
     if([3,7,11,15].indexOf(index) !== -1) return false;
     if(this.items[index+1] === this.items[index]) return true;
   }
