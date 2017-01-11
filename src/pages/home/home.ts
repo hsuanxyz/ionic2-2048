@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, Events } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -10,9 +10,29 @@ export class HomePage {
 
   items:Array<number>;
 
-  constructor(public navCtrl: NavController) {
+  constructor(
+    public navCtrl: NavController,
+    public events: Events
+  ) {
     // this.items = [16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,0,0];
     this.init();
+  }
+
+  ionViewDidLoad() {
+
+    this.events.subscribe('event:swipe', (type) => {
+      console.log(type);
+      switch (type) {
+        case 'up':
+          this.up();
+          break;
+        case 'down':
+          this.down();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   static getRandomIntInclusive(min:number, max:number):number {
@@ -31,33 +51,18 @@ export class HomePage {
     this.init();
   }
 
-
-
   swipeEvent($e) {
-    console.log($e.direction)
-    let what = '';
     switch ($e.direction) {
-      case 8:
-        what = 'Swiped up';
-        this.up();
-        break;
-      case 16:
-        what = 'Swiped down';
-        this.down();
-        break;
       case 2:
-        what = 'Swiped left';
         this.left();
         break;
       case 4:
-        what = 'Swiped right';
         this.right();
         break;
       default:
-        what = 'Swiped ???';
         break;
     }
-    console.log(what)
+
   }
 
   /**

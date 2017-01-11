@@ -1,5 +1,9 @@
 page-home {
 
+  .scroll-content{
+    overflow-y: hidden;
+  }
+  
   $mainBackgroundColor: #faf8ef;
   $itemsBackgroundColor: #bbada0;
   $itemBackgroundColor: rgba(238, 228, 218, 0.48);
