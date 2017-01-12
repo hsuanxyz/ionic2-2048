@@ -16,7 +16,6 @@ export class HomePage {
     public navCtrl: NavController,
     public events: Events
   ) {
-    // this.items = [16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,0,0];
     this.audio = new Audio();
     this.audio.src = "../assets/901.wav";
     this.audio.load();
@@ -48,6 +47,13 @@ export class HomePage {
 
   init(){
     this.items = new Array(16).fill(0);
+    // this.items = [
+    //   4,2,4,8,
+    //   4,2,2,4,
+    //   2,4,2,2,
+    //   2,4,4,2
+    // ];
+
     this.randomFill();
     this.randomFill();
   }
@@ -73,7 +79,8 @@ export class HomePage {
 
   isGameOver():boolean {
 
-    return true;
+
+    return false;
   }
 
   /**
@@ -109,96 +116,119 @@ export class HomePage {
     let isNext = false;
     let mergeList = [];
     for(let i = 0; i < 4; i++) {
-      this.items.forEach( (item,index,arr) => {
-          if(this.canMoveUp(index)){
-            this.items[index-4] = item;
-            this.items[index] = 0;
-            isNext = true;
-          }else if(this.canMergeUp(index) && mergeList.indexOf(index) === -1){
-            mergeList.push(index-4);
-            this.items[index-4] = item*2;
-            this.items[index] = 0;
-            isNext = true;
-          }
 
-      });
+      for(let index = 0; index < this.items.length; index++){
+        let item = this.items[index];
+
+        if(this.canMoveUp(index)){
+          this.items[index-4] = item;
+          this.items[index] = 0;
+          isNext = true;
+        }else if(this.canMergeUp(index) && mergeList.indexOf(index) === -1){
+          mergeList.push(index-4);
+          mergeList.push(index);
+          this.items[index-4] = item*2;
+          this.items[index] = 0;
+          isNext = true;
+        }
+      }
+
+
     }
     if(isNext){
       this.randomFill();
     }
+    this.isGameOver();
   }
 
   down(){
     let isNext = false;
     let mergeList = [];
-    for(let i = 0; i < 4; i++) {
-      this.items.forEach( (item,index,arr) => {
+    for(let i = 0; i < 3; i++) {
+
+      for(let index = this.items.length-1; index >= 0; index--){
+        let item = this.items[index];
+
         if(this.canMoveDown(index)){
           this.items[index+4] = item;
           this.items[index] = 0;
           isNext = true;
-        }else if(this.canMergeDown(index) && mergeList.indexOf(index) === -1){
+        }else if(this.canMergeDown(index) && mergeList.indexOf(index+4) === -1 && mergeList.indexOf(index) === -1){
           mergeList.push(index+4);
           this.items[index+4] = item*2;
           this.items[index] = 0;
           isNext = true;
         }
+      }
 
-      });
     }
     if(isNext){
       this.randomFill();
     }
+    this.isGameOver();
 
   }
 
   left(){
     let isNext = false;
     let mergeList = [];
+
     for(let i = 0; i < 4; i++) {
-      this.items.forEach( (item,index,arr) => {
-        if(this.canMoveLeft(index)){
+
+      for(let index = 0; index < this.items.length; index++){
+        let item = this.items[index];
+
+        if(this.canMoveLeft(index) ){
           this.items[index-1] = item;
           this.items[index] = 0;
           isNext = true;
-        }else if(this.canMergeLeft(index) && mergeList.indexOf(index) === -1){
+        }else if(this.canMergeLeft(index) &&  mergeList.indexOf(index) === -1){
           mergeList.push(index-1);
+          mergeList.push(index);
           this.items[index-1] = item*2;
           this.items[index] = 0;
 
           isNext = true;
         }
-
-      });
+      }
     }
+
     if(isNext){
       this.randomFill();
     }
+    this.isGameOver();
+
   }
 
   right(){
     let isNext = false;
-
     let mergeList = [];
+
     for(let i = 0; i < 4; i++) {
-      this.items.forEach( (item,index,arr) => {
+
+      for(let index = this.items.length-1; index >= 0; index--){
+        let item = this.items[index];
+
         if(item !== 0){
           if(this.canMoveRight(index)){
             this.items[index+1] = item;
             this.items[index] = 0;
             isNext = true;
-          }else if(this.canMergeRight(index) && mergeList.indexOf(index) === -1){
+          }else if(this.canMergeRight(index) && mergeList.indexOf(index) === -1 && mergeList.indexOf(index+1)===-1){
             mergeList.push(index+1);
             this.items[index+1] = item*2;
             this.items[index] = 0;
             isNext = true;
           }
         }
-      });
+      }
+
     }
     if(isNext){
       this.randomFill();
     }
+    this.isGameOver();
+
   }
 
   canMoveUp(index){
@@ -227,13 +257,13 @@ export class HomePage {
 
   canMoveLeft(index){
     if(this.items[index] === 0) return false;
-    if([4,8,12,16].indexOf(index) !== -1) return false;
+    if([0,4,8,12].indexOf(index) !== -1) return false;
     if(this.items[index-1] === 0) return true;
   }
 
   canMergeLeft(index){
     if(this.items[index] === 0) return false;
-    if([4,8,12,16].indexOf(index) !== -1) return false;
+    if([0,4,8,12].indexOf(index) !== -1) return false;
     if(this.items[index-1] === this.items[index]) return true;
   }
   canMoveRight(index){
@@ -247,4 +277,6 @@ export class HomePage {
     if([3,7,11,15].indexOf(index) !== -1) return false;
     if(this.items[index+1] === this.items[index]) return true;
   }
+
+
 }
