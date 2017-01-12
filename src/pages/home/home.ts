@@ -79,7 +79,24 @@ export class HomePage {
 
   isGameOver():boolean {
 
+    for(let i = 0; i < this.items.length; i++){
+      let item = this.items[i];
 
+      if(item === 0) return true;
+      if(
+        this.canMoveLeft(i)
+        || this.canMoveUp(i)
+        || this.canMoveRight(i)
+        || this.canMoveDown(i)
+        || this.canMergeUp(i)
+        || this.canMergeDown(i)
+        || this.canMergeLeft(i)
+        || this.canMergeRight(i)
+      ){
+        return true;
+      }
+    }
+    console.log('game over!');
     return false;
   }
 
