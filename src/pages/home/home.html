@@ -18,10 +18,18 @@
 
 <ion-content class="main"  >
   <!--(swipe)="swipeEvent($event)"-->
-  <div class="swipeBox"
-       swipe-vertical
-       (swipe)="swipeEvent($event)"
-       ></div>
+
+  <div class="game-over-box" *ngIf="showGameOver">
+    <h2>Game Over</h2>
+    <h3>score:88888</h3>
+      <button ion-button color="warn" block round (click)="showGameOver = !1; start();">重新开始</button>
+      <button ion-button color="main" block round (click)="showGameOver = !1">返回</button>
+  </div>
+
+  <!--<div class="swipeBox"-->
+       <!--swipe-vertical-->
+       <!--(swipe)="swipeEvent($event)"-->
+       <!--&gt;</div>-->
   <div class="score-box" >
     <div class="score">
       <p>得分</p>

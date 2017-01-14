@@ -11,6 +11,7 @@ export class HomePage {
 
   items:Array<number>;
   audio:any;
+  showGameOver:boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -48,10 +49,10 @@ export class HomePage {
   init(){
     this.items = new Array(16).fill(0);
     // this.items = [
-    //   4,2,4,8,
-    //   4,2,2,4,
-    //   2,4,2,2,
-    //   2,4,4,2
+    //   32,16,4,4,
+    //   0,0,0,2,
+    //   0,4,0,0,
+    //   0,0,0,2
     // ];
 
     this.randomFill();
@@ -77,7 +78,7 @@ export class HomePage {
 
   }
 
-  isGameOver():boolean {
+  refereeGameOver():boolean {
 
     for(let i = 0; i < this.items.length; i++){
       let item = this.items[i];
@@ -97,6 +98,7 @@ export class HomePage {
       }
     }
     console.log('game over!');
+    this.showGameOver = true;
     return false;
   }
 
@@ -125,7 +127,7 @@ export class HomePage {
 
     indexArr = this.findFullIndex();
     fillIndex = HomePage.getRandomIntInclusive(0,indexArr.length-1);
-    random = Math.random() >= 0.5 ? 4 : 2;
+    random = Math.random() >= 0.666 ? 4 : 2;
     this.items[indexArr[fillIndex]] = random;
   }
 
@@ -155,7 +157,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
-    this.isGameOver();
+    this.refereeGameOver();
   }
 
   down(){
@@ -182,7 +184,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
-    this.isGameOver();
+    this.refereeGameOver();
 
   }
 
@@ -213,7 +215,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
-    this.isGameOver();
+    this.refereeGameOver();
 
   }
 
@@ -244,7 +246,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
-    this.isGameOver();
+    this.refereeGameOver();
 
   }
 
