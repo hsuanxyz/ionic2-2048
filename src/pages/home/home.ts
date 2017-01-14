@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { Storage } from '@ionic/storage';
 import { NavController, Events } from 'ionic-angular';
 
 declare let window;
@@ -12,15 +12,18 @@ export class HomePage {
   items:Array<number>;
   audio:any;
   showGameOver:boolean = false;
+  score:number = 0;
+  highest:number = 0;
 
   constructor(
     public navCtrl: NavController,
-    public events: Events
+    public events: Events,
+    public storage: Storage,
   ) {
     this.audio = new Audio();
     this.audio.src = "../assets/901.wav";
     this.audio.load();
-    this.init();
+    this.findHistory();
   }
 
   ionViewDidLoad() {
@@ -45,23 +48,58 @@ export class HomePage {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
   init(){
     this.items = new Array(16).fill(0);
+    this.randomFill();
+    this.randomFill();
     // this.items = [
     //   32,16,4,4,
     //   0,0,0,2,
     //   0,4,0,0,
     //   0,0,0,2
     // ];
-
-    this.randomFill();
-    this.randomFill();
   }
 
   start(){
-
+    this.recordScore(0);
     this.init();
+    this.initHistory();
+  }
+
+  initHistory(){
+    this.storage.set('history-score',this.score);
+    this.storage.set('history-highest',this.highest);
+    this.storage.set('history-items',this.items);
+  }
+
+  serHistoryAndRefreshHighest(){
+    this.highest = this.score >= this.highest ? this.score : this.highest;
+    this.storage.set('history-score',this.score);
+    this.storage.set('history-items',this.items);
+    this.storage.set('history-highest',this.highest);
+  }
+
+  findHistory(){
+    this.storage.get('history-score')
+      .then( res => {
+        if(!res || res === 0){
+          this.init();
+          this.initHistory();
+        }else {
+          this.score = res;
+          this.storage.get('history-items')
+            .then( res => {
+              this.items = res;
+            });
+          this.storage.get('history-highest')
+            .then( res => {
+              this.highest = res;
+            });
+        }
+      })
+      .catch( err => {
+        this.initHistory();
+      })
   }
 
   swipeEvent($e) {
@@ -145,6 +183,7 @@ export class HomePage {
           isNext = true;
         }else if(this.canMergeUp(index) && mergeList.indexOf(index) === -1){
           mergeList.push(index-4);
+          this.recordScore(item);
           mergeList.push(index);
           this.items[index-4] = item*2;
           this.items[index] = 0;
@@ -157,6 +196,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
+    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
   }
 
@@ -174,6 +214,7 @@ export class HomePage {
           isNext = true;
         }else if(this.canMergeDown(index) && mergeList.indexOf(index+4) === -1 && mergeList.indexOf(index) === -1){
           mergeList.push(index+4);
+          this.recordScore(item);
           this.items[index+4] = item*2;
           this.items[index] = 0;
           isNext = true;
@@ -184,6 +225,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
+    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
 
   }
@@ -203,6 +245,7 @@ export class HomePage {
           isNext = true;
         }else if(this.canMergeLeft(index) &&  mergeList.indexOf(index) === -1){
           mergeList.push(index-1);
+          this.recordScore(item);
           mergeList.push(index);
           this.items[index-1] = item*2;
           this.items[index] = 0;
@@ -215,6 +258,7 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
+    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
 
   }
@@ -235,6 +279,7 @@ export class HomePage {
             isNext = true;
           }else if(this.canMergeRight(index) && mergeList.indexOf(index) === -1 && mergeList.indexOf(index+1)===-1){
             mergeList.push(index+1);
+            this.recordScore(item);
             this.items[index+1] = item*2;
             this.items[index] = 0;
             isNext = true;
@@ -246,8 +291,16 @@ export class HomePage {
     if(isNext){
       this.randomFill();
     }
+    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
 
+  }
+
+  recordScore(num:number){
+    if(num === 0 ){
+      this.score = 0;
+    }
+    this.score += num;
   }
 
   canMoveUp(index){

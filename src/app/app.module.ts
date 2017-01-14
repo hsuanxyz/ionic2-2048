@@ -1,11 +1,17 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { SwipeVertical } from '../components/swipe-vertical/swipe-vertical';
+
+
+export function provideStorage() {
+  return new Storage(['sqlite', 'websql', 'indexeddb'], { name: '__2048game' })
+}
 
 @NgModule({
   declarations: [
@@ -27,6 +33,6 @@ import { SwipeVertical } from '../components/swipe-vertical/swipe-vertical';
     HomePage,
     TabsPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},{ provide: Storage, useFactory: provideStorage }]
 })
 export class AppModule {}

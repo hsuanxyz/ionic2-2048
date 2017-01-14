@@ -16,28 +16,28 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="main"  >
+<ion-content class="main">
   <!--(swipe)="swipeEvent($event)"-->
 
   <div class="game-over-box" *ngIf="showGameOver">
     <h2>Game Over</h2>
-    <h3>score:88888</h3>
+    <h3>score:{{score}}</h3>
       <button ion-button color="warn" block round (click)="showGameOver = !1; start();">重新开始</button>
       <button ion-button color="main" block round (click)="showGameOver = !1">返回</button>
   </div>
 
-  <!--<div class="swipeBox"-->
-       <!--swipe-vertical-->
-       <!--(swipe)="swipeEvent($event)"-->
-       <!--&gt;</div>-->
+  <div class="swipeBox"
+       swipe-vertical
+       (swipe)="swipeEvent($event)"
+       ></div>
   <div class="score-box" >
     <div class="score">
       <p>得分</p>
-      <p class="now">11825</p>
+      <p class="now">{{score}}</p>
     </div>
     <div class="score ">
       <p>最高</p>
-      <p class="highest">112862</p>
+      <p class="highest">{{highest}}</p>
     </div>
   </div>
 
@@ -58,8 +58,5 @@
     <p>咋玩：滑动手指控制方向，合并相同数字获得胜利或者失败！</p>
   </div>
 
-  <audio id="bgMusic">
-    <source  src="../assets/901.wav" type="audio/wav">
-  </audio>
 
 </ion-content>
