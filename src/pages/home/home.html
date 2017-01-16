@@ -9,8 +9,8 @@
       <button ion-button icon-only (click)="start()">
         <ion-icon name="md-refresh"></ion-icon>
       </button>
-      <button ion-button icon-only >
-        <ion-icon name="md-undo"></ion-icon>(5)
+      <button ion-button icon-only (click)="restore()">
+        <ion-icon name="md-undo"></ion-icon>({{historical.length}})
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -48,10 +48,10 @@
       {{item < 2 ? '' : item}}</div>
   </div>
 
-  <button (click)="up()">上</button>
-  <button (click)="down()">下</button>
-  <button (click)="left()">左</button>
-  <button (click)="right()">右</button>
+  <!--<button (click)="up()">上</button>-->
+  <!--<button (click)="down()">下</button>-->
+  <!--<button (click)="left()">左</button>-->
+  <!--<button (click)="right()">右</button>-->
 
   <div class="tips">
     <h5>合并数字获得2048，或者更高！</h5>

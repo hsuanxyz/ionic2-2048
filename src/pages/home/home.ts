@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController, Events } from 'ionic-angular';
+import {highlight} from "@ionic/app-scripts/dist/highlight/highlight";
 
 declare let window;
 @Component({
@@ -14,7 +15,7 @@ export class HomePage {
   showGameOver:boolean = false;
   score:number = 0;
   highest:number = 0;
-
+  historical:Array< Array<number> > = [];
   constructor(
     public navCtrl: NavController,
     public events: Events,
@@ -61,15 +62,33 @@ export class HomePage {
   }
 
   start(){
+    this.historical = [];
     this.recordScore(0);
     this.init();
     this.initHistory();
+  }
+
+  restore(){
+    if(this.historical.length){
+      this.items = this.historical.pop()
+    }else {
+      console.log('not historical')
+    }
+  }
+
+  setHistorical(arr:Array<number>){
+    if(this.historical.length >= 5){
+      this.historical.shift();
+    }
+    this.historical.push(arr)
+    this.storage.set('historical',this.historical);
   }
 
   initHistory(){
     this.storage.set('history-score',this.score);
     this.storage.set('history-highest',this.highest);
     this.storage.set('history-items',this.items);
+    this.storage.set('historical',[]);
   }
 
   serHistoryAndRefreshHighest(){
@@ -94,6 +113,10 @@ export class HomePage {
           this.storage.get('history-highest')
             .then( res => {
               this.highest = res;
+            });
+          this.storage.get('historical')
+            .then( res => {
+              this.historical = res;
             });
         }
       })
@@ -172,6 +195,7 @@ export class HomePage {
   up(){
     let isNext = false;
     let mergeList = [];
+    let arr = Array.from(this.items);
     for(let i = 0; i < 4; i++) {
 
       for(let index = 0; index < this.items.length; index++){
@@ -194,15 +218,17 @@ export class HomePage {
 
     }
     if(isNext){
+      this.setHistorical(arr);
       this.randomFill();
+      this.serHistoryAndRefreshHighest();
     }
-    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
   }
 
   down(){
     let isNext = false;
     let mergeList = [];
+    let arr = Array.from(this.items);
     for(let i = 0; i < 3; i++) {
 
       for(let index = this.items.length-1; index >= 0; index--){
@@ -223,9 +249,11 @@ export class HomePage {
 
     }
     if(isNext){
+      this.setHistorical(arr);
       this.randomFill();
+      this.serHistoryAndRefreshHighest();
     }
-    this.serHistoryAndRefreshHighest();
+
     this.refereeGameOver();
 
   }
@@ -233,6 +261,7 @@ export class HomePage {
   left(){
     let isNext = false;
     let mergeList = [];
+    let arr = Array.from(this.items);
 
     for(let i = 0; i < 4; i++) {
 
@@ -256,14 +285,18 @@ export class HomePage {
     }
 
     if(isNext){
+      this.setHistorical(arr);
       this.randomFill();
+      this.serHistoryAndRefreshHighest();
+
     }
-    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
 
   }
 
   right(){
+    let arr = Array.from(this.items);
+
     let isNext = false;
     let mergeList = [];
 
@@ -289,9 +322,11 @@ export class HomePage {
 
     }
     if(isNext){
+      this.setHistorical(arr);
       this.randomFill();
+      this.serHistoryAndRefreshHighest();
+
     }
-    this.serHistoryAndRefreshHighest();
     this.refereeGameOver();
 
   }
