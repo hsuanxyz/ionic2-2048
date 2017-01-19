@@ -17,6 +17,9 @@ a 2048 game of ionic2
 
 `$ npm install`
 
+`$ ionic state reset --plugins`
+
+`$ cordova plugin add cordova-sqlite-storage --save`
 ## 运行在浏览器
 `$ ionic serve`
 
